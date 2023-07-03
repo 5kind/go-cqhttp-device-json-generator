@@ -15,15 +15,14 @@ board=$(getprop ro.product.board)
 brand=$(getprop ro.product.brand)
 model=$(getprop ro.product.model)
 boot_id=$(cat /proc/sys/kernel/random/boot_id)
-proc_version=$(cat /proc/version)
 mac_address=$(cat /sys/class/net/wlan0/address)
 # mac_address=$(ip addr show wlan0 | awk '/ether/{print $2}')
 ip_address=$(curl -s https://api.ipify.org)
+# ip_address=$(ip addr show wlan0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
 ip_address_1=$(echo $ip_address | cut -d '.' -f 1)
 ip_address_2=$(echo $ip_address | cut -d '.' -f 2)
 ip_address_3=$(echo $ip_address | cut -d '.' -f 3)
 ip_address_4=$(echo $ip_address | cut -d '.' -f 4)
-# ip_address=$(ip addr show wlan0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
 incremental=$(getprop ro.build.version.incremental)
 display=$(getprop ro.build.display.id)
 finger_print=$(getprop ro.build.fingerprint)
@@ -36,18 +35,19 @@ version_sdk=$(getprop ro.build.version.sdk)
 vendor_name=$brand
 
 # adb shell
+proc_version=$(cat /proc/version)
 wifi_ssid=$(dumpsys wifi | grep "current SSID"|cut -d '"' -f2)
 android_id=$(settings get secure android_id)
 wifi_bssid=$(dumpsys wifi | grep "BSSID" | grep "$wifi_ssid" | awk -F 'BSSID: ' '{print $2}' | awk -F ', ' '{print $1}' | sed '/^$/d' | grep -v false)
 # apn=$(settings get global captive_portal_mode)
 
 # random
-# imei="043531087285758"                      # 示例（15 位数）
-# imsi_md5="a8e3e5ddf99ae6af9c501a255ad765d5" # 示例 MD5
 imei=$(head /dev/urandom | tr -dc '0-9' | fold -w 15 | head -n 1)
 imsi_md5=$(head /dev/urandom | md5sum | awk '{print $1}')
+# imei="043531087285758"                      # 示例（15 位数）
+# imsi_md5="a8e3e5ddf99ae6af9c501a255ad765d5" # 示例 MD5
 
-json_data=$(cat <<EOF
+cat <<EOF
 {
     "product": "$product",
     "device": "$device",
@@ -88,6 +88,3 @@ json_data=$(cat <<EOF
     "vendor_os_name": "$vendor_os_name"
 }
 EOF
-)
-
-echo "$json_data" > device.json
