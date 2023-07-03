@@ -1,5 +1,5 @@
 # Go-cqhttp-device-json-generator
-用于在 adb shell 中生成 device.json 的 shell 脚本 [go-cqhttp](https://github.com/Mrs4s/go-cqhttp)
+用于在 adb shell 中生成 [go-cqhttp](https://github.com/Mrs4s/go-cqhttp) device.json 的 shell 脚本 
 
 ## 用法
 * 修改 `custom` 部分的内容( protocol 等)
